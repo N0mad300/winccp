@@ -135,7 +135,7 @@ namespace winccp
                 "albumcover" => _config.AlbumCover?.Show ?? true,
                 "infos" => _config.Infos?.Show ?? true,
                 "progressbar" => _config.ProgressBar?.Show ?? true,
-                "source" => _config.Source?.Show ?? true,
+                "source" => _config.Source?.Show ?? false,
                 _ => false
             };
         }

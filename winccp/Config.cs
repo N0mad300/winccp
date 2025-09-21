@@ -130,7 +130,7 @@
 
                 Source = new SourceConfig
                 {
-                    Show = ini.GetBool("Source", "Show", true),
+                    Show = ini.GetBool("Source", "Show", false),
                     Color = ini.Get("Source", "Color", "DarkGrey"),
                 }
             };
@@ -172,7 +172,7 @@
 
     public class SourceConfig
     {
-        public bool Show { get; set; } = true;
+        public bool Show { get; set; } = false;
         public string Color { get; set; } = "DarkGrey";
     }
 }
