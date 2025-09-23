@@ -2,6 +2,10 @@
 
 A minimalist CLI player based on Windows SMTC to control any media.
 
+![image_1](./image_1.png)
+
+![image_2](./image_2.png)
+
 ## Hotkeys
 
 | Hotkey			| Action			|
