@@ -1,10 +1,16 @@
 ﻿# winccp
 
-A minimalist CLI player based on Windows SMTC to control any media.
+A minimalist CLI music player based on Windows SMTC to control any media (Spotify,
+Apple Music, Chrome, etc.).
 
 ![image_1](./image_1.png)
 
 ![image_2](./image_2.png)
+
+## Get Started
+
+Just launch your favorite music app (Spotify, Apple Music, Chrome, etc.), 
+launch winccp in terminal and enjoy !
 
 ## Hotkeys
 
