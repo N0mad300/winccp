@@ -12,18 +12,18 @@ namespace winccp
         private readonly object _renderLock = new();
 
         // ANSI escape codes
-        private const string ESC = "\x1b";
-        private const string CLEAR_SCREEN = "\x1b[2J";
-        private const string HIDE_CURSOR = "\x1b[?25l";
-        private const string SHOW_CURSOR = "\x1b[?25h";
-        private const string RESET_COLOR = "\x1b[0m";
-        private const string HOME = "\x1b[H";
+        private const string Esc = "\x1b";
+        private const string ClearScreen = "\x1b[2J";
+        private const string HideCursor = "\x1b[?25l";
+        private const string ShowCursor = "\x1b[?25h";
+        private const string ResetColor = "\x1b[0m";
+        private const string Home = "\x1b[H";
 
         public Renderer(Config config)
         {
             _config = config;
             Console.OutputEncoding = Encoding.UTF8;
-            Console.Write(HIDE_CURSOR);
+            Console.Write(HideCursor);
         }
 
         public void Render(MediaState mediaState, bool forceRedraw = false)
@@ -35,7 +35,7 @@ namespace winccp
 
                 if (sizeChanged)
                 {
-                    Console.Write(CLEAR_SCREEN);
+                    Console.Write(ClearScreen);
                     _widgetCache.Clear();
                     _lastConsoleSize = currentSize;
                 }
@@ -55,7 +55,7 @@ namespace winccp
         private string BuildFrame(MediaState mediaState, (int width, int height) consoleSize, bool forceRedraw)
         {
             _buffer.Clear();
-            _buffer.Append(HOME); // Move cursor to home position
+            _buffer.Append(Home); // Move cursor to home position
 
             var layout = CalculateLayout(consoleSize);
 
@@ -203,7 +203,7 @@ namespace winccp
                 if (leftPadding > 0)
                 {
                     // This will center the sixel image
-                    return $"{ESC}[{leftPadding}C{sixel}";
+                    return $"{Esc}[{leftPadding}C{sixel}";
                 }
 
                 return sixel;
@@ -233,8 +233,8 @@ namespace winccp
 
             // Apply color and center
             var color = GetAnsiColor(_config.Infos?.Color ?? "White");
-            lines.Add($"{color}{CenterText(title, position.Width)}{RESET_COLOR}");
-            lines.Add($"{color}{CenterText(artistAlbum, position.Width)}{RESET_COLOR}");
+            lines.Add($"{color}{CenterText(title, position.Width)}{ResetColor}");
+            lines.Add($"{color}{CenterText(artistAlbum, position.Width)}{ResetColor}");
 
             return string.Join("\n", lines);
         }
@@ -272,7 +272,7 @@ namespace winccp
                 bar.Append(emptyColor);
                 bar.Append(new string(emptyChar, emptyCount));
             }
-            bar.Append(RESET_COLOR);
+            bar.Append(ResetColor);
 
             lines.Add(CenterText(bar.ToString(), position.Width));
 
@@ -284,7 +284,7 @@ namespace winccp
                 string timeStr = $"{posStr} / {durStr}";
 
                 var timeColor = GetAnsiColor(_config.ProgressBar?.TimeColor ?? "Yellow");
-                lines.Add($"{timeColor}{CenterText(timeStr, position.Width)}{RESET_COLOR}");
+                lines.Add($"{timeColor}{CenterText(timeStr, position.Width)}{ResetColor}");
             }
 
             return string.Join("\n", lines);
@@ -294,7 +294,7 @@ namespace winccp
         {
             string source = mediaState.SourceApp ?? "Unknown Source";
             var color = GetAnsiColor(_config.Source?.Color ?? "DarkGray");
-            return $"{color}{CenterText($"♫ {source} ♫", position.Width)}{RESET_COLOR}";
+            return $"{color}{CenterText($"♫ {source} ♫", position.Width)}{ResetColor}";
         }
 
         private void RenderWidgetToBuffer(string content, WidgetPosition position)
@@ -305,11 +305,11 @@ namespace winccp
             for (int i = 0; i < lines.Length && i < position.Height; i++)
             {
                 // Position cursor and write line
-                _buffer.Append($"{ESC}[{position.Y + i};1H"); // Move to line start
+                _buffer.Append($"{Esc}[{position.Y + i};1H"); // Move to line start
                 _buffer.Append(lines[i]);
 
                 // Clear to end of line if needed
-                _buffer.Append($"{ESC}[K");
+                _buffer.Append($"{Esc}[K");
             }
         }
 
@@ -341,30 +341,30 @@ namespace winccp
         {
             return colorName?.ToLower() switch
             {
-                "black" => $"{ESC}[30m",
-                "darkred" => $"{ESC}[31m",
-                "darkgreen" => $"{ESC}[32m",
-                "darkyellow" => $"{ESC}[33m",
-                "darkblue" => $"{ESC}[34m",
-                "darkmagenta" => $"{ESC}[35m",
-                "darkcyan" => $"{ESC}[36m",
-                "gray" or "grey" => $"{ESC}[37m",
-                "darkgray" or "darkgrey" => $"{ESC}[90m",
-                "red" => $"{ESC}[91m",
-                "green" => $"{ESC}[92m",
-                "yellow" => $"{ESC}[93m",
-                "blue" => $"{ESC}[94m",
-                "magenta" => $"{ESC}[95m",
-                "cyan" => $"{ESC}[96m",
-                "white" => $"{ESC}[97m",
-                _ => $"{ESC}[37m" // Default to gray
+                "black" => $"{Esc}[30m",
+                "darkred" => $"{Esc}[31m",
+                "darkgreen" => $"{Esc}[32m",
+                "darkyellow" => $"{Esc}[33m",
+                "darkblue" => $"{Esc}[34m",
+                "darkmagenta" => $"{Esc}[35m",
+                "darkcyan" => $"{Esc}[36m",
+                "gray" or "grey" => $"{Esc}[37m",
+                "darkgray" or "darkgrey" => $"{Esc}[90m",
+                "red" => $"{Esc}[91m",
+                "green" => $"{Esc}[92m",
+                "yellow" => $"{Esc}[93m",
+                "blue" => $"{Esc}[94m",
+                "magenta" => $"{Esc}[95m",
+                "cyan" => $"{Esc}[96m",
+                "white" => $"{Esc}[97m",
+                _ => $"{Esc}[37m" // Default to gray
             };
         }
 
         public void Cleanup()
         {
-            Console.Write(SHOW_CURSOR);
-            Console.Write(RESET_COLOR);
+            Console.Write(ShowCursor);
+            Console.Write(ResetColor);
             Console.Clear();
         }
     }

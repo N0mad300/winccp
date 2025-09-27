@@ -8,15 +8,15 @@ namespace winccp
 {
     internal static class SixelEncoder
     {
-        private const char SIXELEMPTY = '?';
-        private const char SIXELCOLORSTART = '#';
-        private const char SIXELREPEAT = '!';
-        private const char SIXELDECGCR = '$';
-        private const char SIXELDECGNL = '-';
-        private const string SIXELSTART = $"\eP0;1q";
-        private const string SIXELEND = $"\e\\";
-        private const string SIXELTRANSPARENTCOLOR = "#0;2;0;0;0";
-        private const string SIXELRASTERATTRIBUTES = "\"1;1;";
+        private const char SixelEmpty = '?';
+        private const char SixelColorStart = '#';
+        private const char SixelRepeat = '!';
+        private const char SixelDECGCR = '$';
+        private const char SixelDECGNL = '-';
+        private const string SixelStart = $"\eP0;1q";
+        private const string SixelEnd = $"\e\\";
+        private const string SixelTransparentColor = "#0;2;0;0;0";
+        private const string SixelRasterAttributes = "\"1;1;";
 
         private static (int width, int height) _cellSize = GetCellSize();
         public struct SizeLimit
@@ -150,7 +150,7 @@ namespace winccp
                 for (var y = 0; y < accessor.Height; y++)
                 {
                     var pixelRow = accessor.GetRowSpan(y);
-                    var c = (char)(SIXELEMPTY + (1 << (y % 6)));
+                    var c = (char)(SixelEmpty + (1 << (y % 6)));
                     var lastColor = -1;
                     var repeatCounter = 0;
                     foreach (ref var pixel in pixelRow)
@@ -187,14 +187,14 @@ namespace winccp
                     {
                         sixelBuilder.AppendSixelEntry(lastColor, c);
                     }
-                    sixelBuilder.Append(SIXELDECGCR);
+                    sixelBuilder.Append(SixelDECGCR);
                     if (y % 6 == 5)
                     {
-                        sixelBuilder.Append(SIXELDECGNL);
+                        sixelBuilder.Append(SixelDECGNL);
                     }
                 }
             });
-            sixelBuilder.Append(SIXELEND);
+            sixelBuilder.Append(SixelEnd);
             return sixelBuilder.ToString();
         }
 
@@ -206,7 +206,7 @@ namespace winccp
             var g = (int)Math.Round(pixel.G / 255.0 * 100);
             var b = (int)Math.Round(pixel.B / 255.0 * 100);
 
-            sixelBuilder.Append(SIXELCOLORSTART)
+            sixelBuilder.Append(SixelColorStart)
                         .Append(colorIndex)
                         .Append(";2;")
                         .Append(r)
@@ -221,28 +221,28 @@ namespace winccp
                                               int repeatCounter,
                                               char e)
         {
-            sixelBuilder.Append(SIXELCOLORSTART)
+            sixelBuilder.Append(SixelColorStart)
                         .Append(color)
-                        .Append(SIXELREPEAT)
+                        .Append(SixelRepeat)
                         .Append(repeatCounter)
-                        .Append(color != 0 ? e : SIXELEMPTY);
+                        .Append(color != 0 ? e : SixelEmpty);
         }
 
         private static void AppendSixelEntry(this StringBuilder sixelBuilder, int color, char e)
         {
-            sixelBuilder.Append(SIXELCOLORSTART)
+            sixelBuilder.Append(SixelColorStart)
                         .Append(color)
-                        .Append(color != 0 ? e : SIXELEMPTY);
+                        .Append(color != 0 ? e : SixelEmpty);
         }
 
         private static void StartSixel(this StringBuilder sixelBuilder, int width, int height)
         {
-            sixelBuilder.Append(SIXELSTART)
-                        .Append(SIXELRASTERATTRIBUTES)
+            sixelBuilder.Append(SixelStart)
+                        .Append(SixelRasterAttributes)
                         .Append(width)
                         .Append(';')
                         .Append(height)
-                        .Append(SIXELTRANSPARENTCOLOR);
+                        .Append(SixelTransparentColor);
         }
     }
 }
